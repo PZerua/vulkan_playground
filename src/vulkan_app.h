@@ -40,6 +40,8 @@ private:
     std::vector<VkImageView> swapChainImageViews;
     VkRenderPass renderPass;
     VkPipelineLayout pipelineLayout;
+    VkPipeline graphicsPipeline;
+    std::vector<VkFramebuffer> swapChainFramebuffers;
 
     VkQueue graphicsQueue;
     VkQueue presentQueue;
@@ -56,6 +58,7 @@ private:
     void createImageViews();
     void createGraphicsPipeline();
     void createRenderPass();
+    void createFramebuffers();
 
     VkShaderModule createShaderModule(const std::vector<char>& code);
 
