@@ -6,9 +6,13 @@
 #include <vector>
 #include <optional>
 
+const int MAX_FRAMES_IN_FLIGHT = 2;
+
 class VulkanApp {
 public:
     void run();
+
+    bool framebufferResized = false;
 
 private:
 
@@ -42,14 +46,24 @@ private:
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
     std::vector<VkFramebuffer> swapChainFramebuffers;
+    VkCommandPool commandPool;
+
+    std::vector<VkCommandBuffer> commandBuffers;
 
     VkQueue graphicsQueue;
     VkQueue presentQueue;
+
+    std::vector<VkSemaphore> imageAvailableSemaphores;
+    std::vector<VkSemaphore> renderFinishedSemaphores;
+    std::vector<VkFence> inFlightFences;
+
+    uint32_t currentFrame = 0;
 
     void initWindow();
     void initVulkan();
     void mainLoop();
     void cleanup();
+    void drawFrame();
 
     void createInstance();
     void createLogicalDevice();
@@ -59,6 +73,14 @@ private:
     void createGraphicsPipeline();
     void createRenderPass();
     void createFramebuffers();
+    void createCommandPool();
+    void createCommandBuffers();
+    void createSyncObjects();
+
+    void recreateSwapChain();
+    void cleanupSwapChain();
+
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
     VkShaderModule createShaderModule(const std::vector<char>& code);
 
