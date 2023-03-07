@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
 
 # Directories
 set(VK_DIR_ROOT       ${CMAKE_CURRENT_LIST_DIR})
@@ -9,6 +9,27 @@ project(VulkanApp CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "build")
+
+# enable FetchContent
+include(FetchContent)
+
+# download stb_image
+FetchContent_Declare(
+    stb_image
+    URL https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
+    DOWNLOAD_DIR ${VK_DIR_SOURCES}
+    DOWNLOAD_NO_EXTRACT TRUE
+)
+
+# download texture
+FetchContent_Declare(
+    texture
+    URL https://vulkan-tutorial.com/images/texture.jpg
+    DOWNLOAD_DIR ${CMAKE_CURRENT_LIST_DIR}/textures
+    DOWNLOAD_NO_EXTRACT TRUE
+)
+
+FetchContent_MakeAvailable(stb_image texture)
 
 # Sources
 macro(VK_FILES_APPEND)
