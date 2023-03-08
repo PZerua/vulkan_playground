@@ -4,11 +4,38 @@ cmake_minimum_required(VERSION 3.14)
 set(VK_DIR_ROOT       ${CMAKE_CURRENT_LIST_DIR})
 set(VK_DIR_LIBRARIES  "${VK_DIR_ROOT}/externals")
 set(VK_DIR_SOURCES    "${VK_DIR_ROOT}/src")
+set(VK_SHADERS_DIR    "${VK_DIR_ROOT}/shaders")
 
 project(VulkanApp CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "build")
+
+# vulkan
+find_package(Vulkan REQUIRED COMPONENTS glslc)
+find_program(glslc_executable NAMES glslc HINTS Vulkan::glslc)
+
+# COMPILE SHADERS
+file(GLOB SHADERS
+  ${VK_SHADERS_DIR}/*.vert
+  ${VK_SHADERS_DIR}/*.frag
+  ${VK_SHADERS_DIR}/*.comp)
+
+foreach(source IN LISTS SHADERS)
+  get_filename_component(FILENAME ${source} NAME)
+  add_custom_command(
+    COMMAND
+      ${glslc_executable}
+      -o ${VK_SHADERS_DIR}/${FILENAME}.spv
+      ${source}
+    OUTPUT ${VK_SHADERS_DIR}/${FILENAME}.spv
+    DEPENDS ${source} ${VK_SHADERS_DIR}
+    COMMENT "Compiling ${FILENAME}"
+  )
+  list(APPEND SPV_SHADERS ${VK_SHADERS_DIR}/${FILENAME}.spv)
+endforeach()
+
+add_custom_target(Shaders ALL DEPENDS ${SPV_SHADERS})
 
 # enable FetchContent
 include(FetchContent)
@@ -43,7 +70,8 @@ endmacro()
 
 VK_SOURCES_APPEND(${VK_DIR_SOURCES})
 
-add_executable(${PROJECT_NAME} ${VK_SOURCES})
+add_executable(${PROJECT_NAME} ${VK_SOURCES} ${Shaders})
+add_dependencies(${PROJECT_NAME} Shaders)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${VK_DIR_SOURCES})
 
@@ -51,7 +79,6 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT $
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 # vulkan
-find_package(Vulkan REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES})
 include_directories(${Vulkan_INCLUDE_DIR})
 
