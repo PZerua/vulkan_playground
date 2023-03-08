@@ -48,15 +48,31 @@ FetchContent_Declare(
     DOWNLOAD_NO_EXTRACT TRUE
 )
 
+# download stb_image
+FetchContent_Declare(
+    tinyobjloader
+    URL https://github.com/tinyobjloader/tinyobjloader/blob/release/tiny_obj_loader.h
+    DOWNLOAD_DIR ${VK_DIR_SOURCES}
+    DOWNLOAD_NO_EXTRACT TRUE
+)
+
 # download texture
 FetchContent_Declare(
     texture
-    URL https://vulkan-tutorial.com/images/texture.jpg
+    URL https://vulkan-tutorial.com/resources/viking_room.png
     DOWNLOAD_DIR ${CMAKE_CURRENT_LIST_DIR}/textures
     DOWNLOAD_NO_EXTRACT TRUE
 )
 
-FetchContent_MakeAvailable(stb_image texture)
+# download model
+FetchContent_Declare(
+    model
+    URL https://vulkan-tutorial.com/resources/viking_room.obj
+    DOWNLOAD_DIR ${CMAKE_CURRENT_LIST_DIR}/models
+    DOWNLOAD_NO_EXTRACT TRUE
+)
+
+FetchContent_MakeAvailable(stb_image tinyobjloader texture model)
 
 # Sources
 macro(VK_FILES_APPEND)

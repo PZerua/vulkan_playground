@@ -4,4 +4,6 @@ out/
 build/
 *.spv
 src/stb_image.h
-textures/texture.jpg
+src/tiny_obj_loader.h
+textures/*
+models/*
