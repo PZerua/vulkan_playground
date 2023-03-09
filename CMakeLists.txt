@@ -51,7 +51,7 @@ FetchContent_Declare(
 # download stb_image
 FetchContent_Declare(
     tinyobjloader
-    URL https://github.com/tinyobjloader/tinyobjloader/blob/release/tiny_obj_loader.h
+    URL https://raw.githubusercontent.com/tinyobjloader/tinyobjloader/release/tiny_obj_loader.h
     DOWNLOAD_DIR ${VK_DIR_SOURCES}
     DOWNLOAD_NO_EXTRACT TRUE
 )
